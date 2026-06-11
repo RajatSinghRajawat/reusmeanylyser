@@ -1,0 +1,27 @@
+services:
+  backend:
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile
+    container_name: resumeai-backend
+    restart: unless-stopped
+    ports:
+      - "8081:8080"
+    environment:
+      - PORT=8080
+      - NODE_ENV=production
+    env_file:
+      - ./Backend/.env
+
+  frontend:
+    build:
+      context: ./resume
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=http://localhost:8081
+    container_name: resumeai-frontend
+    restart: unless-stopped
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
